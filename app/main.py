@@ -221,7 +221,7 @@ def calculate_tire_cbm(size_string: str):
     volume_mm3 = math.pi * (radius_mm ** 2) * width_mm
 
     # Convert to m³
-    volume_m3 = volume_mm3 / 1_000_000.0
+    volume_m3 = volume_mm3 / 1_000_000_000.0
 
     return round(volume_m3, 3)
 
@@ -761,9 +761,9 @@ def analysis(request: Request, db: Session = Depends(get_db)):
     products = db.query(Product).order_by(Product.brand, Product.size_string).all()
     rows = []
 
-    # Rough usable container volumes (m³)
-    CONTAINER_20_CBM = 28.0
-    CONTAINER_40_CBM = 60.0
+    # approximate usable CBM per container
+    CBM_20 = 28.0   # adjust later if you want
+    CBM_40 = 68.0
 
     for p in products:
         offers = p.competitor_prices or []
@@ -787,29 +787,22 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             any_in_stock = False
 
         factory_cost = (p.exw_price or 0.0) + (p.packing_cost or 0.0)
+
         profit_per_tire = None
         margin_percent = None
-
         if best_price is not None and best_price > 0:
-            if not best_currency or best_currency == p.currency:
+            if not best_currency or best_currency == (p.currency or "USD"):
                 profit_per_tire = best_price - factory_cost
                 if best_price != 0:
                     margin_percent = (profit_per_tire / best_price) * 100.0
 
-        # 🔹 CBM calculation: use stored CBM if >0, otherwise estimate
-        if p.tire_cbm and p.tire_cbm > 0:
-            effective_cbm = p.tire_cbm
-        else:
-            auto_cbm = calculate_tire_cbm(p.size_string)
-            effective_cbm = auto_cbm or 0.0
+        # --- CBM + container units ---
+        cbm = p.tire_cbm
+        if not cbm or cbm <= 0:
+            cbm = calculate_tire_cbm(p.size_string) or 0.0
 
-        # 🔹 Container capacity (integer number of tires)
-        if effective_cbm > 0:
-            units_20 = int(CONTAINER_20_CBM / effective_cbm)
-            units_40 = int(CONTAINER_40_CBM / effective_cbm)
-        else:
-            units_20 = None
-            units_40 = None
+        units_20 = int(CBM_20 / cbm) if cbm > 0 else 0
+        units_40 = int(CBM_40 / cbm) if cbm > 0 else 0
 
         rows.append(
             {
@@ -823,7 +816,7 @@ def analysis(request: Request, db: Session = Depends(get_db)):
                 "profit_per_tire": profit_per_tire,
                 "margin_percent": margin_percent,
                 "any_in_stock": any_in_stock,
-                "tire_cbm": effective_cbm,
+                "cbm_per_tire": cbm,
                 "units_20": units_20,
                 "units_40": units_40,
             }
@@ -836,6 +829,7 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             "rows": rows,
         },
     )
+
 
 
 # ---------------------------
