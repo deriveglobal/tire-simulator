@@ -362,6 +362,8 @@
             <th>Source Country</th>
             <th>EXW</th>
             <th>Packing</th>
+            <th>Weight (kg)</th>       <!-- NEW -->
+            <th>CBM / Tire</th>        <!-- NEW -->
             <th>Currency</th>
             <th style="min-width: 180px;">Actions</th>
           </tr>
@@ -385,6 +387,8 @@
               <td>{{ product.source_country or "Turkiye" }}</td>
               <td>{{ "%.2f"|format(product.exw_price or 0) }}</td>
               <td>{{ "%.2f"|format(product.packing_cost or 0) }}</td>
+              <td>{{ "%.2f"|format(product.tire_weight_kg or 0) }}</td>  <!-- NEW -->
+              <td>{{ "%.3f"|format(product.tire_cbm or 0) }}</td>        <!-- NEW -->
               <td>{{ product.currency or "USD" }}</td>
               <td class="actions-column">
                 <a class="link-button" href="/products/{{ product.id }}/edit">Edit</a>

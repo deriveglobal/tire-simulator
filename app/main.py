@@ -1,3 +1,4 @@
+from collections import Counter, defaultdict
 from typing import Optional
 from fastapi import FastAPI, Request, Depends, Form, UploadFile, File
 from fastapi.responses import RedirectResponse, HTMLResponse, StreamingResponse
@@ -8,13 +9,15 @@ import re
 import httpx
 import csv
 import io
+import json
+import math
 
 from .scrapers import scrape_all_sources, ScrapedOffer
 
 # ---------------------------
 # Google Custom Search config
 # ---------------------------
-GOOGLE_API_KEY = "AIzaSyCCpdvPIquVjmlUrxxD3ZEZ_a0MGyQOgy0"
+GOOGLE_API_KEY = "AIzaSyCCpdvPIquVvmlUrxxD3ZEZ_a0MGyQOgy0"
 GOOGLE_CX = "f57f45f72644c493d"
 
 DATABASE_URL = "sqlite:///tire_simulator.db"
@@ -25,6 +28,10 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
+# Approx container volumes (very rough, useful for “how many pcs”)
+CONTAINER_20FT_CBM = 33.0
+CONTAINER_40FT_CBM = 67.0
 
 # ---------------------------
 # Dropdown option definitions
@@ -157,6 +164,61 @@ def extract_price_from_text(text: str):
     return price_value, currency
 
 
+def calculate_tire_cbm(size_string: str):
+    """
+    Estimate tire volume in CBM from size_string.
+
+    Supports:
+      - Metric radial:  480/70R28
+      - Imperial bias:  14.9-28
+
+    Returns a float in m³, or None if format isn't recognized.
+    """
+    if not size_string:
+        return None
+
+    s = size_string.replace(" ", "").upper()
+
+    # Metric pattern: 480/70R28
+    metric = re.match(r"(\d{3})/(\d{2})R(\d{2})", s)
+    if metric:
+        width_mm = int(metric.group(1))            # mm
+        aspect = int(metric.group(2)) / 100.0      # 70 -> 0.70
+        rim_inch = int(metric.group(3))
+        rim_mm = rim_inch * 25.4
+
+        sidewall = width_mm * aspect
+        diameter_mm = rim_mm + 2 * sidewall
+
+    else:
+        # Imperial pattern: 14.9-28 (or 12.4-28, 18.4-30, etc.)
+        imperial = re.match(r"(\d{1,2}(\.\d)?)-(\d{2})", s)
+        if imperial:
+            width_inch = float(imperial.group(1))
+            rim_inch = int(imperial.group(3))
+
+            width_mm = width_inch * 25.4
+            rim_mm = rim_inch * 25.4
+
+            # Default aspect ratio for bias tires (assumption)
+            aspect = 0.85
+            sidewall = width_mm * aspect
+            diameter_mm = rim_mm + 2 * sidewall
+        else:
+            # Unsupported / weird format
+            return None
+
+    radius_mm = diameter_mm / 2.0
+
+    # Cylinder volume in mm³
+    volume_mm3 = math.pi * (radius_mm ** 2) * width_mm
+
+    # Convert to m³
+    volume_m3 = volume_mm3 / 1_000_000.0
+
+    return round(volume_m3, 3)
+
+
 # ---------------------------
 # DATABASE MODELS
 # ---------------------------
@@ -182,7 +244,7 @@ class Product(Base):
     tire_cbm = Column(Float, default=0.0)
     duty_percent = Column(Float, default=0.0)
 
-    # NEW: source country, default Turkiye
+    # Source country, default Turkiye
     source_country = Column(String, default="Turkiye")
 
     competitor_prices = relationship(
@@ -309,6 +371,11 @@ def create_product(
     source_country: str = Form("Turkiye"),
     db: Session = Depends(get_db),
 ):
+    # If CBM not supplied or zero, auto-calculate from size_string
+    auto_cbm = calculate_tire_cbm(size_string)
+    if (tire_cbm is None or tire_cbm == 0.0) and auto_cbm is not None:
+        tire_cbm = auto_cbm
+
     product = Product(
         brand=brand,
         model_name=model_name,
@@ -360,6 +427,18 @@ def import_products_csv(
             skipped += 1
             continue
 
+        # Handle CBM from CSV or auto-calc
+        raw_cbm = row.get("tire_cbm")
+        try:
+            tire_cbm_val = float(raw_cbm) if raw_cbm not in (None, "",) else 0.0
+        except ValueError:
+            tire_cbm_val = 0.0
+
+        if tire_cbm_val == 0.0:
+            auto_cbm = calculate_tire_cbm(size_string)
+            if auto_cbm is not None:
+                tire_cbm_val = auto_cbm
+
         product = Product(
             brand=brand,
             model_name=(row.get("model_name") or "").strip(),
@@ -374,7 +453,7 @@ def import_products_csv(
             exw_price=float(row.get("exw_price") or 0.0),
             packing_cost=float(row.get("packing_cost") or 0.0),
             tire_weight_kg=float(row.get("tire_weight_kg") or 0.0),
-            tire_cbm=float(row.get("tire_cbm") or 0.0),
+            tire_cbm=tire_cbm_val,
             duty_percent=float(row.get("duty_percent") or 0.0),
             source_country=(row.get("source_country") or "Turkiye").strip() or "Turkiye",
         )
@@ -408,7 +487,11 @@ def edit_product(product_id: int, request: Request, db: Session = Depends(get_db
         return RedirectResponse(url="/products", status_code=303)
     return templates.TemplateResponse(
         "edit_product.html",
-        {"request": request, "product": product, "country_choices": COUNTRY_CHOICES},
+        {
+            "request": request,
+            "product": product,
+            "country_choices": COUNTRY_CHOICES,
+        },
     )
 
 
@@ -437,6 +520,11 @@ def update_product(
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         return RedirectResponse(url="/products", status_code=303)
+
+    # Auto-calc CBM if zero
+    auto_cbm = calculate_tire_cbm(size_string)
+    if (tire_cbm is None or tire_cbm == 0.0) and auto_cbm is not None:
+        tire_cbm = auto_cbm
 
     product.brand = brand
     product.model_name = model_name
@@ -587,7 +675,7 @@ def update_competitor(
     competitor.region = region
     competitor.competitor_brand = competitor_brand
     competitor.competitor_model = competitor_model
-    competitor_size = competitor_size
+    competitor.competitor_size = competitor_size
     competitor.selling_price = selling_price
     competitor.currency = currency
     competitor.url = url
@@ -632,7 +720,7 @@ def import_competitor_from_search(
 ):
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
-        return RedirectResponse("/products", status_code=303)
+        return RedirectResponse(url="/products", status_code=303)
 
     if not competitor_size:
         competitor_size = product.size_string
@@ -698,6 +786,14 @@ def analysis(request: Request, db: Session = Depends(get_db)):
                 if best_price != 0:
                     margin_percent = (profit_per_tire / best_price) * 100.0
 
+        # Container capacity based on tire_cbm
+        if p.tire_cbm and p.tire_cbm > 0:
+            max_20ft = math.floor(CONTAINER_20FT_CBM / p.tire_cbm)
+            max_40ft = math.floor(CONTAINER_40FT_CBM / p.tire_cbm)
+        else:
+            max_20ft = None
+            max_40ft = None
+
         rows.append(
             {
                 "product": p,
@@ -710,6 +806,8 @@ def analysis(request: Request, db: Session = Depends(get_db)):
                 "profit_per_tire": profit_per_tire,
                 "margin_percent": margin_percent,
                 "any_in_stock": any_in_stock,
+                "max_20ft": max_20ft,
+                "max_40ft": max_40ft,
             }
         )
 
@@ -718,6 +816,61 @@ def analysis(request: Request, db: Session = Depends(get_db)):
         {
             "request": request,
             "rows": rows,
+        },
+    )
+
+
+# ---------------------------
+# DASHBOARD (CHARTS)
+# ---------------------------
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard(request: Request, db: Session = Depends(get_db)):
+    products = db.query(Product).all()
+
+    # --- BASIC COUNTS ---
+
+    # Products by segment
+    segment_counts = Counter(p.segment or "Unspecified" for p in products)
+
+    # Products by source country
+    country_counts = Counter(p.source_country or "Unspecified" for p in products)
+
+    # --- AVERAGE EXW PRICE BY SEGMENT ---
+    price_sum = defaultdict(float)
+    price_count = defaultdict(int)
+
+    for p in products:
+        seg = p.segment or "Unspecified"
+        if p.exw_price and p.exw_price > 0:
+            price_sum[seg] += p.exw_price
+            price_count[seg] += 1
+
+    segment_avg_price = {
+        seg: (price_sum[seg] / price_count[seg])
+        for seg in price_sum
+        if price_count[seg] > 0
+    }
+
+    # Prepare simple arrays for Chart.js
+    segment_labels = list(segment_counts.keys())
+    segment_values = list(segment_counts.values())
+
+    country_labels = list(country_counts.keys())
+    country_values = list(country_counts.values())
+
+    avg_seg_labels = list(segment_avg_price.keys())
+    avg_seg_values = [round(v, 2) for v in segment_avg_price.values()]
+
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {
+            "request": request,
+            "segment_labels_json": json.dumps(segment_labels),
+            "segment_values_json": json.dumps(segment_values),
+            "country_labels_json": json.dumps(country_labels),
+            "country_values_json": json.dumps(country_values),
+            "avg_seg_labels_json": json.dumps(avg_seg_labels),
+            "avg_seg_values_json": json.dumps(avg_seg_values),
         },
     )
 

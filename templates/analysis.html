@@ -1,100 +1,283 @@
 {% extends "base.html" %}
+
 {% block content %}
+<div class="main-container">
 
-<h2>Opportunities – Products vs Competitors</h2>
-<p>
-  This page shows each product with its basic factory cost (EXW + packing)
-  and the best competitor price we have in the database.
-</p>
+  <!-- Page header -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;">
+    <div>
+      <h2 style="margin:0;font-size:1.4rem;">Opportunities Dashboard</h2>
+      <p style="margin:4px 0 0;font-size:0.85rem;color:#6b7280;">
+        High-level view of your products, competitor prices and potential margins.
+      </p>
+    </div>
+  </div>
 
-{% if rows and rows|length > 0 %}
-<table class="data-table">
-  <thead>
-    <tr>
-      <th>Brand</th>
-      <th>Model</th>
-      <th>Size</th>
-      <th>Segment</th>
-      <th>Category</th>
-      <th>Currency</th>
-      <th>Factory Cost<br>(EXW + Packing)</th>
-      <th>Best Competitor</th>
-      <th>Region</th>
-      <th>Best Price</th>
-      <th>Profit / Tire</th>
-      <th>Margin %</th>
-      <th># Offers</th>
-      <th>Stock</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in rows %}
-      {% set p = row.product %}
-      <tr>
-        <td>{{ p.brand }}</td>
-        <td>{{ p.model_name }}</td>
-        <td>{{ p.size_string }}</td>
-        <td>{{ p.segment }}</td>
-        <td>{{ p.category }}</td>
-        <td>{{ p.currency }}</td>
-        <td>
-          {% if row.factory_cost is not none %}
-            {{ "%.2f"|format(row.factory_cost) }}
-          {% else %}
-            –
-          {% endif %}
-        </td>
-        <td>
-          {% if row.best_comp_name %}
-            {{ row.best_comp_name }}
-          {% else %}
-            –
-          {% endif %}
-        </td>
-        <td>{{ row.best_comp_region or "–" }}</td>
-        <td>
-          {% if row.best_price is not none %}
-            {{ "%.2f"|format(row.best_price) }} {{ row.best_currency or "" }}
-          {% else %}
-            –
-          {% endif %}
-        </td>
-        <td>
-          {% if row.profit_per_tire is not none %}
-            {{ "%.2f"|format(row.profit_per_tire) }}
-          {% else %}
-            –
-          {% endif %}
-        </td>
-        <td>
-          {% if row.margin_percent is not none %}
-            {% set m = row.margin_percent %}
-            <span
-              class="
-                margin-indicator
-                {% if m < 5 %}margin-low{% elif m < 15 %}margin-mid{% else %}margin-high{% endif %}
-              "
-            >
-              {{ "%.1f"|format(m) }}%
-            </span>
-          {% else %}
-            –
-          {% endif %}
-        </td>
-        <td>{{ row.offers_count }}</td>
-        <td>
-          {% if row.offers_count == 0 %}
-            –
-          {% else %}
-            {% if row.any_in_stock %}In Stock{% else %}OOS / Unknown{% endif %}
-          {% endif %}
-        </td>
-      </tr>
+  <!-- Summary cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:18px;">
+    {% set ns = namespace(
+      total_products=rows|length,
+      with_competitors=0,
+      positive_margin_products=0,
+      total_margin=0.0,
+      margin_count=0
+    ) %}
+
+    {% for r in rows %}
+      {% if r.offers_count > 0 %}
+        {% set ns.with_competitors = ns.with_competitors + 1 %}
+      {% endif %}
+
+      {% if r.margin_percent is not none %}
+        {% set ns.margin_count = ns.margin_count + 1 %}
+        {% set ns.total_margin = ns.total_margin + r.margin_percent %}
+        {% if r.margin_percent > 0 %}
+          {% set ns.positive_margin_products = ns.positive_margin_products + 1 %}
+        {% endif %}
+      {% endif %}
     {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p>No products or competitor offers yet. Add products and competitor prices first.</p>
-{% endif %}
+
+    {% if ns.margin_count > 0 %}
+      {% set avg_margin = (ns.total_margin / ns.margin_count) %}
+    {% else %}
+      {% set avg_margin = 0 %}
+    {% endif %}
+
+    <div class="card">
+      <div style="font-size:0.78rem;text-transform:uppercase;color:#6b7280;margin-bottom:4px;">
+        Total Products
+      </div>
+      <div style="font-size:1.6rem;font-weight:600;">
+        {{ ns.total_products }}
+      </div>
+      <div class="small-text">Products currently in your database.</div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:0.78rem;text-transform:uppercase;color:#6b7280;margin-bottom:4px;">
+        With Competitors
+      </div>
+      <div style="font-size:1.6rem;font-weight:600;">
+        {{ ns.with_competitors }}
+      </div>
+      <div class="small-text">
+        Products that already have at least one competitor price.
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:0.78rem;text-transform:uppercase;color:#6b7280;margin-bottom:4px;">
+        Positive Margin Candidates
+      </div>
+      <div style="font-size:1.6rem;font-weight:600;">
+        {{ ns.positive_margin_products }}
+      </div>
+      <div class="small-text">
+        Products where competitor price &gt; your factory cost.
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:0.78rem;text-transform:uppercase;color:#6b7280;margin-bottom:4px;">
+        Avg. Theoretical Margin
+      </div>
+      <div style="font-size:1.6rem;font-weight:600;">
+        {{ "%.1f"|format(avg_margin) }}%
+      </div>
+      <div class="small-text">
+        Based on products with valid competitor prices and same currency.
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="card" style="margin-bottom:18px;">
+    <h3 style="margin-top:0;font-size:1.05rem;">Top 10 Products by Margin %</h3>
+    <p class="small-text">
+      Quick view of where you theoretically have the strongest room to play.
+    </p>
+    <canvas id="marginChart" height="120"></canvas>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <h3 style="margin-top:0;font-size:1.05rem;">Factory Cost vs Best Competitor Price (Top 10)</h3>
+    <p class="small-text">
+      Bars compare your factory cost (EXW + packing) with the best available competitor selling price.
+    </p>
+    <canvas id="costVsCompetitorChart" height="140"></canvas>
+  </div>
+
+  <!-- Existing table (full detail) -->
+  <div class="card">
+    <h3 style="margin-top:0;font-size:1.05rem;">Full Opportunity Table</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Brand</th>
+          <th>Size</th>
+          <th>Segment</th>
+          <th>Factory Cost</th>
+          <th>Best Competitor</th>
+          <th>Best Price</th>
+          <th>Margin / Tire</th>
+          <th>Margin %</th>
+          <th>Offers</th>
+          <th>In Stock?</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+          <tr>
+            <td>{{ r.product.brand }}</td>
+            <td>{{ r.product.size_string }}</td>
+            <td>{{ r.product.segment or "-" }}</td>
+            <td>
+              {% if r.factory_cost is not none %}
+                {{ "%.2f"|format(r.factory_cost) }} {{ r.product.currency or "USD" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if r.best_comp_name %}
+                {{ r.best_comp_name }}
+                {% if r.best_comp_region %}
+                  <span style="color:#6b7280;font-size:0.75rem;">({{ r.best_comp_region }})</span>
+                {% endif %}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if r.best_price is not none %}
+                {{ "%.2f"|format(r.best_price) }} {{ r.best_currency or r.product.currency or "USD" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if r.profit_per_tire is not none %}
+                {{ "%.2f"|format(r.profit_per_tire) }} {{ r.product.currency or "USD" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if r.margin_percent is not none %}
+                {{ "%.1f"|format(r.margin_percent) }}%
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>{{ r.offers_count }}</td>
+            <td>
+              {% if r.any_in_stock %}
+                ✅
+              {% else %}
+                ❌
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Charts script -->
+<script>
+  (function () {
+    // Build arrays for charts using Jinja
+    const marginLabels = [];
+    const marginValues = [];
+
+    {% for r in rows if r.margin_percent is not none and r.margin_percent > 0 %}
+      {% if loop.index <= 10 %}
+        marginLabels.push("{{ (r.product.brand ~ ' ' ~ r.product.size_string)|replace('"','\\\"') }}");
+        marginValues.push({{ "%.2f"|format(r.margin_percent) }});
+      {% endif %}
+    {% endfor %}
+
+    const costLabels = [];
+    const factoryCosts = [];
+    const bestPrices = [];
+
+    {% for r in rows if r.best_price is not none and r.factory_cost is not none and r.best_price > 0 %}
+      {% if loop.index <= 10 %}
+        costLabels.push("{{ (r.product.brand ~ ' ' ~ r.product.size_string)|replace('"','\\\"') }}");
+        factoryCosts.push({{ "%.2f"|format(r.factory_cost) }});
+        bestPrices.push({{ "%.2f"|format(r.best_price) }});
+      {% endif %}
+    {% endfor %}
+
+    // If Chart.js not loaded for some reason, bail quietly
+    if (typeof Chart === "undefined") {
+      console.warn("Chart.js not available");
+      return;
+    }
+
+    // Margin chart
+    const marginCtx = document.getElementById("marginChart");
+    if (marginCtx && marginLabels.length) {
+      new Chart(marginCtx, {
+        type: "bar",
+        data: {
+          labels: marginLabels,
+          datasets: [{
+            label: "Margin %",
+            data: marginValues,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: {
+              label: (ctx) => ctx.parsed.y.toFixed(1) + "%"
+            }}
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: (value) => value + "%"
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Cost vs competitor chart
+    const costCtx = document.getElementById("costVsCompetitorChart");
+    if (costCtx && costLabels.length) {
+      new Chart(costCtx, {
+        type: "bar",
+        data: {
+          labels: costLabels,
+          datasets: [
+            {
+              label: "Factory Cost",
+              data: factoryCosts,
+            },
+            {
+              label: "Best Competitor Price",
+              data: bestPrices,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+  })();
+</script>
 
 {% endblock %}
