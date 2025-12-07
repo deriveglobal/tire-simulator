@@ -123,62 +123,102 @@
           <th>Margin %</th>
           <th>Offers</th>
           <th>In Stock?</th>
+	  <th>CBM / Tire</th>
+          <th>20' Units</th>
+          <th>40' Units</th>
+
         </tr>
       </thead>
       <tbody>
-        {% for r in rows %}
-          <tr>
-            <td>{{ r.product.brand }}</td>
-            <td>{{ r.product.size_string }}</td>
-            <td>{{ r.product.segment or "-" }}</td>
-            <td>
-              {% if r.factory_cost is not none %}
-                {{ "%.2f"|format(r.factory_cost) }} {{ r.product.currency or "USD" }}
-              {% else %}
-                -
-              {% endif %}
-            </td>
-            <td>
-              {% if r.best_comp_name %}
-                {{ r.best_comp_name }}
-                {% if r.best_comp_region %}
-                  <span style="color:#6b7280;font-size:0.75rem;">({{ r.best_comp_region }})</span>
-                {% endif %}
-              {% else %}
-                -
-              {% endif %}
-            </td>
-            <td>
-              {% if r.best_price is not none %}
-                {{ "%.2f"|format(r.best_price) }} {{ r.best_currency or r.product.currency or "USD" }}
-              {% else %}
-                -
-              {% endif %}
-            </td>
-            <td>
-              {% if r.profit_per_tire is not none %}
-                {{ "%.2f"|format(r.profit_per_tire) }} {{ r.product.currency or "USD" }}
-              {% else %}
-                -
-              {% endif %}
-            </td>
-            <td>
-              {% if r.margin_percent is not none %}
-                {{ "%.1f"|format(r.margin_percent) }}%
-              {% else %}
-                -
-              {% endif %}
-            </td>
-            <td>{{ r.offers_count }}</td>
-            <td>
-              {% if r.any_in_stock %}
-                ✅
-              {% else %}
-                ❌
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
+        
+{% for r in rows %}
+  <tr>
+    <td>{{ r.product.brand }}</td>
+    <td>{{ r.product.size_string }}</td>
+    <td>{{ r.product.segment or "-" }}</td>
+
+    <td>
+      {% if r.factory_cost is not none %}
+        {{ "%.2f"|format(r.factory_cost) }} {{ r.product.currency or "USD" }}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <td>
+      {% if r.best_comp_name %}
+        {{ r.best_comp_name }}
+        {% if r.best_comp_region %}
+          <span style="color:#6b7280;font-size:0.75rem;">({{ r.best_comp_region }})</span>
+        {% endif %}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <td>
+      {% if r.best_price is not none %}
+        {{ "%.2f"|format(r.best_price) }} {{ r.best_currency or r.product.currency or "USD" }}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <td>
+      {% if r.profit_per_tire is not none %}
+        {{ "%.2f"|format(r.profit_per_tire) }} {{ r.product.currency or "USD" }}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <td>
+      {% if r.margin_percent is not none %}
+        {{ "%.1f"|format(r.margin_percent) }}%
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <!-- ✅ CBM / Tire -->
+    <td>
+      {% if r.tire_cbm and r.tire_cbm > 0 %}
+        {{ "%.3f"|format(r.tire_cbm) }}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <!-- ✅ 20' Units -->
+    <td>
+      {% if r.units_20 %}
+        {{ r.units_20 }}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <!-- ✅ 40' Units -->
+    <td>
+      {% if r.units_40 %}
+        {{ r.units_40 }}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+
+    <td>{{ r.offers_count }}</td>
+
+    <td>
+      {% if r.any_in_stock %}
+        ✅
+      {% else %}
+        ❌
+      {% endif %}
+    </td>
+  </tr>
+{% endfor %}
+
       </tbody>
     </table>
   </div>

@@ -9,6 +9,10 @@
 import re
 
 from app.main import SessionLocal, Product  # IMPORTANT: from app.main
+from app.utils import (
+    estimate_geometry_and_cbm,
+    estimate_units_per_container,
+)
 
 
 RAW_LASSA_LIST = """
@@ -169,6 +173,10 @@ def seed_lassa_products():
                 skipped += 1
                 continue
 
+            # --- NEW: compute geometry + cbm + container loading ---
+            geo = estimate_geometry_and_cbm(data["size_string"])
+            units_20, units_40 = estimate_units_per_container(geo["cbm_per_tire"])
+
             p = Product(
                 brand="Lassa",
                 model_name="",           # pattern name can be added later
@@ -180,12 +188,26 @@ def seed_lassa_products():
                 speed_rating="",         # unknown here
                 ply_rating=data["ply_rating"],
                 currency="USD",          # default for now
+
+                # cost fields (placeholders for now)
                 exw_price=0.0,
                 packing_cost=0.0,
                 tire_weight_kg=0.0,
-                tire_cbm=0.0,
+
+                # OLD: if you still use tire_cbm, keep it in sync with estimate
+                tire_cbm=geo["cbm_per_tire"] or 0.0,
+
                 duty_percent=0.0,
-                source_country="Turkiye",  # 👈 New field, always Turkiye
+                source_country="Turkiye",
+
+                # NEW logistics fields from models.py
+                section_width_mm=geo["section_width_mm"],
+                aspect_ratio=geo["aspect_ratio"],
+                rim_diameter_inch=geo["rim_diameter_inch"],
+                overall_diameter_mm=geo["overall_diameter_mm"],
+                cbm_per_tire_estimated=geo["cbm_per_tire"],
+                units_per_20dc_estimated=units_20,
+                units_per_40hc_estimated=units_40,
             )
             db.add(p)
             created += 1

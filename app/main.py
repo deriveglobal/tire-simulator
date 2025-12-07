@@ -12,7 +12,14 @@ import io
 import json
 import math
 
-from .scrapers import scrape_all_sources, ScrapedOffer
+# Safe import for local run and Render
+try:
+    # when app is run as a package: uvicorn app.main:app
+    from .scrapers import scrape_all_sources, ScrapedOffer
+except ImportError:
+    # when main.py is run directly: uvicorn main:app
+    from scrapers import scrape_all_sources, ScrapedOffer
+
 
 # ---------------------------
 # Google Custom Search config
@@ -754,6 +761,10 @@ def analysis(request: Request, db: Session = Depends(get_db)):
     products = db.query(Product).order_by(Product.brand, Product.size_string).all()
     rows = []
 
+    # Rough usable container volumes (m³)
+    CONTAINER_20_CBM = 28.0
+    CONTAINER_40_CBM = 60.0
+
     for p in products:
         offers = p.competitor_prices or []
         valid_offers = [o for o in offers if (o.selling_price or 0) > 0]
@@ -776,7 +787,6 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             any_in_stock = False
 
         factory_cost = (p.exw_price or 0.0) + (p.packing_cost or 0.0)
-
         profit_per_tire = None
         margin_percent = None
 
@@ -786,13 +796,20 @@ def analysis(request: Request, db: Session = Depends(get_db)):
                 if best_price != 0:
                     margin_percent = (profit_per_tire / best_price) * 100.0
 
-        # Container capacity based on tire_cbm
+        # 🔹 CBM calculation: use stored CBM if >0, otherwise estimate
         if p.tire_cbm and p.tire_cbm > 0:
-            max_20ft = math.floor(CONTAINER_20FT_CBM / p.tire_cbm)
-            max_40ft = math.floor(CONTAINER_40FT_CBM / p.tire_cbm)
+            effective_cbm = p.tire_cbm
         else:
-            max_20ft = None
-            max_40ft = None
+            auto_cbm = calculate_tire_cbm(p.size_string)
+            effective_cbm = auto_cbm or 0.0
+
+        # 🔹 Container capacity (integer number of tires)
+        if effective_cbm > 0:
+            units_20 = int(CONTAINER_20_CBM / effective_cbm)
+            units_40 = int(CONTAINER_40_CBM / effective_cbm)
+        else:
+            units_20 = None
+            units_40 = None
 
         rows.append(
             {
@@ -806,8 +823,9 @@ def analysis(request: Request, db: Session = Depends(get_db)):
                 "profit_per_tire": profit_per_tire,
                 "margin_percent": margin_percent,
                 "any_in_stock": any_in_stock,
-                "max_20ft": max_20ft,
-                "max_40ft": max_40ft,
+                "tire_cbm": effective_cbm,
+                "units_20": units_20,
+                "units_40": units_40,
             }
         )
 

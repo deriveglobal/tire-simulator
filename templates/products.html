@@ -2,6 +2,94 @@
 
 {% block content %}
 <style>
+ /* Filter bar wrapper */
+.products-filters {
+  display: flex;
+  gap: 12px;                /* Space between combo + search */
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+/* Segment Combo Box */
+.products-filters select {
+  width: 160px !important;  /* FIX WIDTH */
+  max-width: 160px !important;
+  min-width: 160px !important;
+
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  color: #111827;
+  transition: all 0.15s ease;
+  cursor: pointer;
+
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M19 9l-7 7-7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+/* Hover + Focus */
+.products-filters select:hover {
+  border-color: #9ca3af;
+}
+.products-filters select:focus {
+  outline: none;
+  border-color: #111827;
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.2);
+}
+
+/* Search box */
+.products-filters input {
+  width: 240px !important;   /* FIX WIDTH */
+  max-width: 240px !important;
+  min-width: 240px !important;
+
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  transition: all 0.15s ease;
+}
+
+/* Hover + Focus */
+.products-filters input:hover {
+  border-color: #9ca3af;
+}
+.products-filters input:focus {
+  outline: none;
+  border-color: #111827;
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.2);
+}
+  .competitor-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #374151;
+  text-decoration: none;
+}
+
+.competitor-pill.has-data {
+  border-color: #bbf7d0;
+  background: #ecfdf5;
+  color: #15803d;
+  font-weight: 500;
+}
+
+.competitor-pill:hover {
+  background: #e5e7eb;
+}
+
   .page-header {
     display: flex;
     justify-content: space-between;
@@ -343,6 +431,38 @@
 
 <!-- EXISTING PRODUCTS LIST -->
 <div class="section-card">
+  <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+    <select
+      id="segmentFilter"
+      style="
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        font-size: 0.9rem;
+        min-width: 80px;
+        background: #f9fafb;
+      "
+    >
+      <option value="">All segments</option>
+      {% for seg in segment_choices %}
+        <option value="{{ seg }}">{{ seg }}</option>
+      {% endfor %}
+    </select>
+
+    <input
+    id="productSearch"
+    type="text"
+    placeholder="Search size… e.g. 280/70R16"
+    style="
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
+      width: 240px;
+    "
+  >
+</div>
+
   <div class="section-title">Existing Products</div>
   <div class="section-subtitle">
     Click <strong>Competitors</strong> or <strong>Auto Fetch Prices</strong> to explore the market for a specific size.
@@ -365,6 +485,7 @@
             <th>Weight (kg)</th>       <!-- NEW -->
             <th>CBM / Tire</th>        <!-- NEW -->
             <th>Currency</th>
+	    <th>Competitors</th>   <!-- 👈 NEW COLUMN -->
             <th style="min-width: 180px;">Actions</th>
           </tr>
         </thead>
@@ -390,30 +511,44 @@
               <td>{{ "%.2f"|format(product.tire_weight_kg or 0) }}</td>  <!-- NEW -->
               <td>{{ "%.3f"|format(product.tire_cbm or 0) }}</td>        <!-- NEW -->
               <td>{{ product.currency or "USD" }}</td>
-              <td class="actions-column">
-                <a class="link-button" href="/products/{{ product.id }}/edit">Edit</a>
+              <!-- NEW Competitors column -->
+<td>
+  {% set comp_count = product.competitor_prices | length %}
+  {% if comp_count > 0 %}
+    <a href="/competitors?product_id={{ product.id }}" class="competitor-pill has-data">
+      {{ comp_count }} {% if comp_count == 1 %}offer{% else %}offers{% endif %}
+    </a>
+  {% else %}
+    <a href="/competitors?product_id={{ product.id }}" class="competitor-pill">
+      + Add
+    </a>
+  {% endif %}
+</td>
 
-                <form action="/products/{{ product.id }}/delete" method="post" style="display:inline;">
-                  <button
-                    type="submit"
-                    class="link-button danger-button"
-                    onclick="return confirm('Delete this product?');"
-                  >
-                    Delete
-                  </button>
-                </form>
-                <br>
-                <a class="link-button" href="/competitors?product_id={{ product.id }}">
-                  Competitors
-                </a>
-                <a
-                  class="link-button"
-                  href="/products/{{ product.id }}/auto_fetch_prices"
-                  target="_blank"
-                >
-                  Auto Fetch
-                </a>
-              </td>
+<!-- Actions column (only Edit/Delete/Auto Fetch now) -->
+<td class="actions-column">
+  <a class="link-button" href="/products/{{ product.id }}/edit">Edit</a>
+
+  <form action="/products/{{ product.id }}/delete" method="post" style="display:inline;">
+    <button
+      type="submit"
+      class="link-button danger-button"
+      onclick="return confirm('Delete this product?');"
+    >
+      Delete
+    </button>
+  </form>
+
+  <a
+    class="link-button"
+    href="/products/{{ product.id }}/auto_fetch_prices"
+    target="_blank"
+    style="margin-left:4px;"
+  >
+    Auto Fetch
+  </a>
+</td>
+
             </tr>
           {% endfor %}
         </tbody>
@@ -491,5 +626,49 @@
     }
   })();
 </script>
+<script>
+  (function () {
+    const searchInput = document.getElementById("productSearch");
+    const segmentSelect = document.getElementById("segmentFilter");
+    const tableBody = document.querySelector(".products-table tbody");
+
+    if (!tableBody) return;
+
+    function filterRows() {
+      const term = (searchInput?.value || "").toLowerCase().trim();
+      const selectedSegment = (segmentSelect?.value || "").trim();
+
+      const rows = tableBody.querySelectorAll("tr");
+
+      rows.forEach(row => {
+        // Size = 3rd column
+        const sizeCell = row.querySelector("td:nth-child(3)");
+        // Segment = 4th column
+        const segCell = row.querySelector("td:nth-child(4)");
+
+        const sizeText = sizeCell ? sizeCell.innerText.toLowerCase() : "";
+        const segText = segCell ? segCell.innerText.trim() : "";
+
+        const matchesSize = !term || sizeText.includes(term);
+        const matchesSegment = !selectedSegment || segText === selectedSegment;
+
+        if (matchesSize && matchesSegment) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener("input", filterRows);
+    }
+    if (segmentSelect) {
+      segmentSelect.addEventListener("change", filterRows);
+    }
+  })();
+</script>
+
+
 
 {% endblock %}
