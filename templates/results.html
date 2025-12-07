@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Simulation Results</h2>
+
+{% if product %}
+<p>
+  <strong>Product:</strong>
+  {{ product.brand }} {{ product.model_name }} {{ product.size_string }}
+</p>
+{% endif %}
+
+<table>
+  <thead>
+    <tr>
+      <th>Channel</th>
+      <th>Profit</th>
+      <th>Margin %</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Retail (E-commerce)</td>
+      <td>{{ results.retail_profit }}</td>
+      <td>{{ results.retail_margin }}</td>
+    </tr>
+    <tr>
+      <td>Wholesale</td>
+      <td>{{ results.wholesale_profit }}</td>
+      <td>{{ results.wholesale_margin }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><a href="/">Back to simulator</a></p>
+{% endblock %}
+

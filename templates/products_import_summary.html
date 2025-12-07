@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">{% extends "base.html" %}</p>
+<p class="p2"><br></p>
+<p class="p1">{% block content %}</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.summary-card {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 18px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>box-shadow: 0 1px 4px rgba(15,23,42,0.08);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.summary-title {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 1.3rem;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.summary-subtitle {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 0.9rem;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: #6b7280;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.summary-metrics {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>flex-wrap: wrap;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gap: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.metric-pill {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 6px 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: #f3f4f6;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.metric-pill strong {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-right: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.errors-list, .warnings-list {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-top: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.errors-list li {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: #b91c1c;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.warnings-list li {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: #92400e;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.back-link {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-top: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 0.9rem;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="summary-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="summary-title"&gt;Import Summary&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="summary-subtitle"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>File: &lt;strong&gt;{{ filename or "Unknown file" }}&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="summary-metrics"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="metric-pill"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;strong&gt;Created:&lt;/strong&gt; {{ created }}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="metric-pill"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;strong&gt;Skipped:&lt;/strong&gt; {{ skipped }}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="metric-pill"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;strong&gt;Total Issues:&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{{ (errors|length) + (warnings|length) }}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>{% if errors and errors|length &gt; 0 %}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="errors-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;strong&gt;Errors (rows not imported):&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{% for err in errors %}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{% if err.row_number %}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>Row {{ err.row_number }}:</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{% endif %}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{{ err.reason }}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{% endfor %}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{% endif %}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>{% if warnings and warnings|length &gt; 0 %}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="warnings-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;strong&gt;Warnings (imported, but please review):&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{% for w in warnings %}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{% if w.row_number %}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>Row {{ w.row_number }}:</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{% endif %}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{{ w.message }}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{% endfor %}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{% endif %}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>{% if not errors and not warnings %}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p style="font-size:0.9rem;color:#16a34a;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>No issues detected. All rows imported successfully.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{% endif %}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a href="/products" class="back-link"&gt;← Back to Products&lt;/a&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">{% endblock %}</p>
+</body>
+</html>

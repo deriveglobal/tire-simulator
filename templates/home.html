@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>Quick Landed Cost Simulator (per tire)</h2>
+    <p class="small-text">
+        This is a general simulator. Later we will connect it directly to your product database and container-level freight.
+    </p>
+    <form method="post" action="/simulate">
+        <div class="grid-2">
+            <div>
+                <label>EXW Price (per tire)</label>
+                <input type="number" step="0.01" name="exw_price" required>
+            </div>
+            <div>
+                <label>Packing Cost (per tire)</label>
+                <input type="number" step="0.01" name="packing_cost" value="0">
+            </div>
+            <div>
+                <label>Duty (%)</label>
+                <input type="number" step="0.01" name="duty_percent" value="0">
+            </div>
+            <div>
+                <label>Freight (per tire)</label>
+                <input type="number" step="0.01" name="freight_per_tire" value="0">
+            </div>
+            <div>
+                <label>Other Fees (per tire)</label>
+                <input type="number" step="0.01" name="other_fees_per_tire" value="0">
+            </div>
+            <div>
+                <label>Target Wholesale Price</label>
+                <input type="number" step="0.01" name="target_wholesale_price" value="0">
+            </div>
+            <div>
+                <label>Target Retail Price</label>
+                <input type="number" step="0.01" name="target_retail_price" value="0">
+            </div>
+        </div>
+        <br>
+        <button type="submit" class="btn">Run Simulation</button>
+    </form>
+</div>
+
+{% if result %}
+<div class="card">
+    <h2>Result</h2>
+    <table>
+        <tr>
+            <th>Landed Cost / Tire</th>
+            <td>{{ result.landed_cost }}</td>
+        </tr>
+        <tr>
+            <th>Wholesale Price</th>
+            <td>{{ result.wholesale_price }}</td>
+        </tr>
+        <tr>
+            <th>Wholesale Margin</th>
+            <td>
+                {% if result.wholesale_margin is not none %}
+                    {{ result.wholesale_margin }} ({{ result.wholesale_margin_pct }} %)
+                {% else %}
+                    –
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Retail Price</th>
+            <td>{{ result.retail_price }}</td>
+        </tr>
+        <tr>
+            <th>Retail Margin</th>
+            <td>
+                {% if result.retail_margin is not none %}
+                    {{ result.retail_margin }} ({{ result.retail_margin_pct }} %)
+                {% else %}
+                    –
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
+

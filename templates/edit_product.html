@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="main-container">
+  <h1>Edit Product – {{ product.brand }} {{ product.size_string }}</h1>
+
+  <form method="post" action="/products/{{ product.id }}/edit" class="form-grid">
+
+    <div class="form-row">
+      <label for="brand">Brand</label>
+      <input type="text" id="brand" name="brand" value="{{ product.brand }}" required>
+    </div>
+
+    <div class="form-row">
+      <label for="model_name">Model / Pattern</label>
+      <input type="text" id="model_name" name="model_name" value="{{ product.model_name or '' }}">
+    </div>
+
+    <div class="form-row">
+      <label for="size_string">Size (standard format)</label>
+      <input
+        type="text"
+        id="size_string"
+        name="size_string"
+        value="{{ product.size_string }}"
+        placeholder="480/80R46"
+        title="Use formats like 480/80R46 or 18.4R38"
+        required
+      >
+      <small>Example formats: 480/80R46, 420/85R34, 18.4R38</small>
+    </div>
+
+    <div class="form-row">
+      <label for="segment">Segment</label>
+      <select id="segment" name="segment" required>
+        <option value="">-- select --</option>
+        <option value="AG"  {% if product.segment == "AG" %}selected{% endif %}>AG – Agricultural</option>
+        <option value="TBR" {% if product.segment == "TBR" %}selected{% endif %}>TBR – Truck &amp; Bus Radial</option>
+        <option value="LT"  {% if product.segment == "LT" %}selected{% endif %}>LT – Light Truck</option>
+        <option value="PSR" {% if product.segment == "PSR" %}selected{% endif %}>PSR – Passenger / PCR</option>
+        <option value="OTR" {% if product.segment == "OTR" %}selected{% endif %}>OTR – Off-the-Road</option>
+        <option value="IND" {% if product.segment == "IND" %}selected{% endif %}>IND – Industrial</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="">-- select --</option>
+        <option value="Tractor Front" {% if product.category == "Tractor Front" %}selected{% endif %}>Tractor Front</option>
+        <option value="Tractor Rear"  {% if product.category == "Tractor Rear" %}selected{% endif %}>Tractor Rear</option>
+        <option value="Implement"     {% if product.category == "Implement" %}selected{% endif %}>Implement</option>
+        <option value="Harvester Front" {% if product.category == "Harvester Front" %}selected{% endif %}>Harvester Front</option>
+        <option value="Harvester Rear"  {% if product.category == "Harvester Rear" %}selected{% endif %}>Harvester Rear</option>
+        <option value="Flotation"       {% if product.category == "Flotation" %}selected{% endif %}>Flotation</option>
+        <option value="Row Crop"        {% if product.category == "Row Crop" %}selected{% endif %}>Row Crop</option>
+
+        <option value="Drive"        {% if product.category == "Drive" %}selected{% endif %}>Drive</option>
+        <option value="Steer"        {% if product.category == "Steer" %}selected{% endif %}>Steer</option>
+        <option value="Trailer"      {% if product.category == "Trailer" %}selected{% endif %}>Trailer</option>
+        <option value="All-Position" {% if product.category == "All-Position" %}selected{% endif %}>All-Position</option>
+        <option value="Mixed Service" {% if product.category == "Mixed Service" %}selected{% endif %}>Mixed Service</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="radial_or_bias">Construction</label>
+      <select id="radial_or_bias" name="radial_or_bias">
+        <option value="">-- select --</option>
+        <option value="Radial" {% if product.radial_or_bias == "Radial" %}selected{% endif %}>Radial</option>
+        <option value="Bias"   {% if product.radial_or_bias == "Bias" %}selected{% endif %}>Bias</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="load_index">Load Index</label>
+      <input type="text" id="load_index" name="load_index" value="{{ product.load_index or '' }}" placeholder="e.g. 151A8 / 151D">
+    </div>
+
+    <div class="form-row">
+      <label for="speed_rating">Speed Rating</label>
+      <input type="text" id="speed_rating" name="speed_rating" value="{{ product.speed_rating or '' }}" placeholder="e.g. A8, D, J, L">
+    </div>
+
+    <div class="form-row">
+      <label for="ply_rating">Ply Rating</label>
+      <input type="text" id="ply_rating" name="ply_rating" value="{{ product.ply_rating or '' }}" placeholder="e.g. 8PR, 10PR">
+    </div>
+
+    <div class="form-row">
+      <label for="currency">Currency</label>
+      <select id="currency" name="currency" required>
+        <option value="USD" {% if product.currency == "USD" %}selected{% endif %}>USD</option>
+        <option value="EUR" {% if product.currency == "EUR" %}selected{% endif %}>EUR</option>
+        <option value="TRY" {% if product.currency == "TRY" %}selected{% endif %}>TRY</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="exw_price">EXW Price (per tire)</label>
+      <input type="number" step="0.01" min="0" id="exw_price" name="exw_price" value="{{ product.exw_price or 0 }}">
+    </div>
+
+    <div class="form-row">
+      <label for="packing_cost">Packing Cost (per tire)</label>
+      <input type="number" step="0.01" min="0" id="packing_cost" name="packing_cost" value="{{ product.packing_cost or 0 }}">
+    </div>
+
+    <div class="form-row">
+      <label for="tire_weight_kg">Weight (kg per tire)</label>
+      <input type="number" step="0.01" min="0" id="tire_weight_kg" name="tire_weight_kg" value="{{ product.tire_weight_kg or 0 }}">
+    </div>
+
+    <div class="form-row">
+      <label for="tire_cbm">CBM (per tire)</label>
+      <input type="number" step="0.0001" min="0" id="tire_cbm" name="tire_cbm" value="{{ product.tire_cbm or 0 }}">
+    </div>
+
+    <div class="form-row">
+      <label for="duty_percent">Duty %</label>
+      <input type="number" step="0.01" min="0" id="duty_percent" name="duty_percent" value="{{ product.duty_percent or 0 }}">
+    </div>
+
+    <div class="form-row full-width" style="margin-top:8px;">
+      <button type="submit">Save Changes</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+

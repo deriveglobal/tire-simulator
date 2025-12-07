@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">{% extends "base.html" %}</p>
+<p class="p2"><br></p>
+<p class="p1">{% block content %}</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="auth-wrapper"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="auth-card"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2 class="auth-title"&gt;Create account&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="auth-subtitle"&gt;Set up your login to use the tire simulator.&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;form method="post" action="/register"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="form-field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Email&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="email" name="email" required&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="form-field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Company / Org Name&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" name="company_name" placeholder="Optional"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="form-field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Password&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="password" name="password" required&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="form-field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Confirm Password&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="password" name="password_confirm" required&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="primary-button" type="submit"&gt;Register&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/form&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p style="margin-top: 1rem; font-size: 0.85rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>Already have an account?</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;a href="/login"&gt;Log in&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1">/* Reuse same styles as login */</p>
+<p class="p1">.auth-wrapper {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>min-height: calc(100vh - 80px);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>justify-content: center;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.auth-card {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>max-width: 420px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 22px 24px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>box-shadow: 0 14px 35px rgba(15, 23, 42, 0.15);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #e5e7eb;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.auth-title {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 1.4rem;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>letter-spacing: 0.02em;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 4px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.auth-subtitle {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #6b7280;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 16px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.form-field {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 12px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.form-field label {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: block;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 0.80rem;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #455565;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.form-field input {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 7px 9px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 7px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #d1d5db;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #f9fafb;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 0.85rem;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.primary-button {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #111827;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 0.9rem;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.primary-button:hover {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #000;</p>
+<p class="p1">}</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">{% endblock %}</p>
+</body>
+</html>

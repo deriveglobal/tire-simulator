@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="main-container">
+  <h1>Auto Competitor Search</h1>
+  <p style="margin-top:4px; font-size:14px; color:#4b5563;">
+    Query: <strong>{{ query }}</strong>
+  </p>
+
+  {% if results and results|length > 0 %}
+    <table class="data-table" style="margin-top:16px;">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Snippet</th>
+          <th>Source</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in results %}
+        <tr>
+          <td>{{ item.title }}</td>
+          <td>{{ item.snippet }}</td>
+          <td>
+            {% if item.displayLink %}
+              {{ item.displayLink }}
+            {% else %}
+              –
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">
+              Open
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p style="margin-top:16px;">No results received from Google.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

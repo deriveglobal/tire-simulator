@@ -1,0 +1,491 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .primary-button {
+    border: none;
+    outline: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #111827;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+
+  .primary-button span.icon {
+    font-size: 1.1rem;
+  }
+
+  .primary-button:hover {
+    background: #000;
+  }
+
+  .section-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.08);
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .section-subtitle {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 10px;
+  }
+
+  .products-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .products-table th,
+  .products-table td {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 8px 6px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .products-table th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #6b7280;
+    text-transform: uppercase;
+  }
+
+  .products-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+
+  .actions-column a,
+  .actions-column form {
+    display: inline-block;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+
+  .link-button {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: #374151;
+    text-decoration: none;
+  }
+
+  .link-button:hover {
+    background: #e5e7eb;
+  }
+
+  .danger-button {
+    border-color: #fecaca;
+    color: #b91c1c;
+    background: #fef2f2;
+  }
+
+  .danger-button:hover {
+    background: #fee2e2;
+  }
+
+  /* New Product Panel */
+  #new-product-panel {
+    display: none;
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  #new-product-panel.open {
+    display: block;
+    max-height: 900px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px 16px;
+    margin-top: 8px;
+  }
+
+  .form-field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #4b5563;
+  }
+
+  .form-field input,
+  .form-field select {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 0.85rem;
+    outline: none;
+    background: #f9fafb;
+  }
+
+  .form-field input:focus,
+  .form-field select:focus {
+    border-color: #111827;
+    background: #ffffff;
+  }
+
+  .form-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .secondary-button {
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .secondary-button:hover {
+    background: #e5e7eb;
+  }
+
+  @media (max-width: 640px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">Products</div>
+    <div class="section-subtitle">
+      Manage your tire sizes, cost structure, and quick access to competitor tools.
+    </div>
+  </div>
+  <button type="button" class="primary-button" id="toggle-new-product">
+    <span class="icon">＋</span>
+    <span>Add New Product</span>
+  </button>
+</div>
+
+<!-- 🔼 NEW PRODUCT PANEL RIGHT AFTER HEADER -->
+<div class="section-card" id="new-product-panel">
+  <div class="section-title">Add New Product</div>
+  <div class="section-subtitle">
+    Start with a clean tire definition — you can refine costs and competitor data later.
+  </div>
+
+  <form action="/products" method="post">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Brand *</label>
+        <input type="text" name="brand" required>
+      </div>
+
+      <div class="form-field">
+        <label>Model Name</label>
+        <input type="text" name="model_name" placeholder="e.g. IMP-700">
+      </div>
+
+      <div class="form-field">
+        <label>Size String *</label>
+        <input type="text" name="size_string" required placeholder="e.g. 280/70R16">
+      </div>
+
+      <div class="form-field">
+        <label>Segment</label>
+        <select name="segment">
+          <option value="">-- Select --</option>
+          {% for seg in segment_choices %}
+            <option value="{{ seg }}">{{ seg }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label>Category</label>
+        <input type="text" name="category" placeholder="e.g. Tractor Rear">
+      </div>
+
+      <div class="form-field">
+        <label>Radial / Bias</label>
+        <select name="radial_or_bias">
+          <option value="">-- Select --</option>
+          {% for rb in radial_bias_choices %}
+            <option value="{{ rb }}">{{ rb }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label>Load Index</label>
+        <input type="text" name="load_index" placeholder="e.g. 115A8">
+      </div>
+
+      <div class="form-field">
+        <label>Speed Rating</label>
+        <select name="speed_rating">
+          <option value="">-- Select --</option>
+          {% for sr in speed_rating_choices %}
+            <option value="{{ sr }}">{{ sr }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label>Ply Rating</label>
+        <input type="text" name="ply_rating" placeholder="e.g. 8 PR">
+      </div>
+
+      <div class="form-field">
+        <label>Currency</label>
+        <input type="text" name="currency" value="USD">
+      </div>
+
+      <div class="form-field">
+        <label>EXW Price</label>
+        <input type="number" step="0.01" name="exw_price" value="0">
+      </div>
+
+      <div class="form-field">
+        <label>Packing Cost</label>
+        <input type="number" step="0.01" name="packing_cost" value="0">
+      </div>
+
+      <div class="form-field">
+        <label>Tire Weight (kg)</label>
+        <input type="number" step="0.01" name="tire_weight_kg" value="0">
+      </div>
+
+      <div class="form-field">
+        <label>Tire CBM</label>
+        <input type="number" step="0.0001" name="tire_cbm" value="0">
+      </div>
+
+      <div class="form-field">
+        <label>Duty %</label>
+        <input type="number" step="0.01" name="duty_percent" value="0">
+      </div>
+
+      <div class="form-field">
+        <label>Source Country *</label>
+        <select name="source_country" required>
+          {% for c in country_choices %}
+            <option value="{{ c }}" {% if c == "Turkiye" %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="secondary-button" id="cancel-new-product">
+        Cancel
+      </button>
+      <button type="submit" class="primary-button">
+        Save Product
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- EXISTING PRODUCTS LIST -->
+<div class="section-card">
+  <div class="section-title">Existing Products</div>
+  <div class="section-subtitle">
+    Click <strong>Competitors</strong> or <strong>Auto Fetch Prices</strong> to explore the market for a specific size.
+  </div>
+
+  {% if products %}
+    <div class="products-table-wrapper">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Brand / Model</th>
+            <th>Size</th>
+            <th>Segment</th>
+            <th>Category</th>
+            <th>Structure</th>
+            <th>Source Country</th>
+            <th>EXW</th>
+            <th>Packing</th>
+            <th>Currency</th>
+            <th style="min-width: 180px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+            <tr>
+              <td>{{ product.id }}</td>
+              <td>
+                <div>{{ product.brand }}</div>
+                {% if product.model_name %}
+                  <div style="font-size:0.75rem;color:#6b7280;">{{ product.model_name }}</div>
+                {% endif %}
+              </td>
+              <td>
+                <span class="badge">{{ product.size_string }}</span>
+              </td>
+              <td>{{ product.segment or "-" }}</td>
+              <td>{{ product.category or "-" }}</td>
+              <td>{{ product.radial_or_bias or "-" }}</td>
+              <td>{{ product.source_country or "Turkiye" }}</td>
+              <td>{{ "%.2f"|format(product.exw_price or 0) }}</td>
+              <td>{{ "%.2f"|format(product.packing_cost or 0) }}</td>
+              <td>{{ product.currency or "USD" }}</td>
+              <td class="actions-column">
+                <a class="link-button" href="/products/{{ product.id }}/edit">Edit</a>
+
+                <form action="/products/{{ product.id }}/delete" method="post" style="display:inline;">
+                  <button
+                    type="submit"
+                    class="link-button danger-button"
+                    onclick="return confirm('Delete this product?');"
+                  >
+                    Delete
+                  </button>
+                </form>
+                <br>
+                <a class="link-button" href="/competitors?product_id={{ product.id }}">
+                  Competitors
+                </a>
+                <a
+                  class="link-button"
+                  href="/products/{{ product.id }}/auto_fetch_prices"
+                  target="_blank"
+                >
+                  Auto Fetch
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="font-size:0.9rem;color:#6b7280;">No products yet. Add your first tire using the button above.</p>
+  {% endif %}
+</div>
+
+<!-- BULK IMPORT VIA CSV -->
+<div class="section-card">
+  <div class="section-title">Bulk Import via CSV</div>
+  <div class="section-subtitle">
+    Upload a CSV file to add multiple products at once.
+    Required columns: <code>brand</code>, <code>size_string</code>.
+    Optional columns:
+    <code>model_name</code>, <code>segment</code>, <code>category</code>,
+    <code>radial_or_bias</code>, <code>load_index</code>, <code>speed_rating</code>,
+    <code>ply_rating</code>, <code>currency</code>, <code>exw_price</code>,
+    <code>packing_cost</code>, <code>tire_weight_kg</code>, <code>tire_cbm</code>,
+    <code>duty_percent</code>, <code>source_country</code> (defaults to Turkiye if empty).
+    You can <a href="/products/sample_csv">download a sample CSV here</a>.
+  </div>
+
+  <form action="/products/import_csv" method="post" enctype="multipart/form-data">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>CSV File</label>
+        <input type="file" name="file" accept=".csv" required>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="primary-button">
+        Import CSV
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  (function() {
+    const toggleBtn = document.getElementById("toggle-new-product");
+    const panel = document.getElementById("new-product-panel");
+    const cancelBtn = document.getElementById("cancel-new-product");
+
+    if (!toggleBtn || !panel) return;
+
+    function closePanel() {
+      panel.classList.remove("open");
+      setTimeout(() => {
+        if (!panel.classList.contains("open")) {
+          panel.style.display = "none";
+          setTimeout(() => { panel.style.display = "block"; }, 10);
+        }
+      }, 250);
+    }
+
+    // Initialize display to block so animation works
+    panel.style.display = "block";
+
+    toggleBtn.addEventListener("click", function() {
+      if (panel.classList.contains("open")) {
+        closePanel();
+      } else {
+        panel.classList.add("open");
+      }
+    });
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function() {
+        closePanel();
+      });
+    }
+  })();
+</script>
+
+{% endblock %}

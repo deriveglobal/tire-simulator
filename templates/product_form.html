@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">{% extends "base.html" %}</p>
+<p class="p1">{% block content %}</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="main-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h1&gt;Add Product (with professional cost structure)&lt;/h1&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;form method="post" action="/products" class="form-grid"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="brand"&gt;Brand&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="brand" name="brand" required&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="model_name"&gt;Model / Pattern&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="model_name" name="model_name"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="size_string"&gt;Size (standard format)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input</p>
+<p class="p1"><span class="Apple-converted-space">        </span>type="text"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>id="size_string"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>name="size_string"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>placeholder="480/80R46"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>title="Use formats like 480/80R46 or 18.4R38"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pattern="^(\d{2,3}\/\d{2}R\d{2}|\d{1,2}\.\dR\d{2})$"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>required</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;small&gt;Example formats: 480/80R46, 420/85R34, 18.4R38&lt;/small&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="segment"&gt;Segment&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;select id="segment" name="segment" required&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value=""&gt;-- select --&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="AG"&gt;AG – Agricultural&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="TBR"&gt;TBR – Truck &amp;amp; Bus Radial&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="LT"&gt;LT – Light Truck&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="PSR"&gt;PSR – Passenger / PCR&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="OTR"&gt;OTR – Off-the-Road&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="IND"&gt;IND – Industrial&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="category"&gt;Category&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;select id="category" name="category"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value=""&gt;-- select --&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Drive"&gt;Drive&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Steer"&gt;Steer&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Trailer"&gt;Trailer&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="All-Position"&gt;All-Position&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Implement"&gt;Implement&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Harvester"&gt;Harvester&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Front Axle"&gt;Front Axle&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="radial_or_bias"&gt;Construction&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;select id="radial_or_bias" name="radial_or_bias"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value=""&gt;-- select --&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Radial"&gt;Radial&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Bias"&gt;Bias&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="load_index"&gt;Load Index&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="load_index" name="load_index" placeholder="e.g. 151A8 / 151D"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="speed_rating"&gt;Speed Rating&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;select id="speed_rating" name="speed_rating"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value=""&gt;-- select (optional) --&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="A8"&gt;A8&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="B"&gt;B&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="C"&gt;C&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="D"&gt;D&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="E"&gt;E&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="F"&gt;F&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="G"&gt;G&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="J"&gt;J&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="K"&gt;K&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="L"&gt;L&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="M"&gt;M&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="N"&gt;N&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="P"&gt;P&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Q"&gt;Q&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="R"&gt;R&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="S"&gt;S&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="T"&gt;T&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="H"&gt;H&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="V"&gt;V&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="W"&gt;W&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="Y"&gt;Y&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="ply_rating"&gt;Ply Rating&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="ply_rating" name="ply_rating" placeholder="e.g. 8PR, 10PR"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="currency"&gt;Currency&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;select id="currency" name="currency" required&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="USD"&gt;USD&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="EUR"&gt;EUR&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value="TRY"&gt;TRY&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="exw_price"&gt;EXW Price (per tire)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="number" step="0.01" min="0" id="exw_price" name="exw_price" value="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="packing_cost"&gt;Packing Cost (per tire)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="number" step="0.01" min="0" id="packing_cost" name="packing_cost" value="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="tire_weight_kg"&gt;Weight (kg per tire)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="number" step="0.01" min="0" id="tire_weight_kg" name="tire_weight_kg" value="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="tire_cbm"&gt;CBM (per tire)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="number" step="0.0001" min="0" id="tire_cbm" name="tire_cbm" value="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="duty_percent"&gt;Duty %&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="number" step="0.01" min="0" id="duty_percent" name="duty_percent" value="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="form-row full-width" style="margin-top:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button type="submit"&gt;Add Product&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/form&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">{% endblock %}</p>
+</body>
+</html>

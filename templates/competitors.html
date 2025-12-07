@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if product %}
+  <h1>Competitor Prices for {{ product.brand }} {{ product.size_string }}</h1>
+
+  <p>
+    <a href="/products">&larr; Back to products</a>
+  </p>
+
+  <form action="/competitors" method="post" class="form-grid">
+    <input type="hidden" name="product_id" value="{{ product.id }}">
+
+    <div class="form-row">
+      <label>Source Name *</label>
+      <input type="text" name="source_name" required>
+    </div>
+    <div class="form-row">
+      <label>Region</label>
+      <input type="text" name="region">
+    </div>
+    <div class="form-row">
+      <label>Currency</label>
+      <input type="text" name="currency" value="USD">
+    </div>
+
+    <div class="form-row">
+      <label>Competitor Brand</label>
+      <input type="text" name="competitor_brand">
+    </div>
+    <div class="form-row">
+      <label>Competitor Model</label>
+      <input type="text" name="competitor_model">
+    </div>
+    <div class="form-row">
+      <label>Competitor Size</label>
+      <input type="text" name="competitor_size" value="{{ product.size_string }}">
+    </div>
+
+    <div class="form-row">
+      <label>Selling Price</label>
+      <input type="number" step="0.01" name="selling_price" value="0">
+    </div>
+    <div class="form-row">
+      <label>Listing URL</label>
+      <input type="url" name="url">
+    </div>
+    <div class="form-row">
+      <label>In Stock?</label>
+      <select name="in_stock">
+        <option value="true" selected>Yes</option>
+        <option value="false">No</option>
+      </select>
+    </div>
+
+    <div class="form-row full-width">
+      <label>Notes</label>
+      <textarea name="notes" rows="2"></textarea>
+    </div>
+
+    <div class="form-row full-width">
+      <button type="submit">Add Competitor Price</button>
+    </div>
+  </form>
+
+  <hr>
+
+  <h2>Saved Competitor Prices</h2>
+
+  {% if competitors %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>Region</th>
+        <th>Brand</th>
+        <th>Model</th>
+        <th>Size</th>
+        <th>Price</th>
+        <th>Currency</th>
+        <th>In Stock</th>
+        <th>URL</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in competitors %}
+      <tr>
+        <td>{{ c.source_name }}</td>
+        <td>{{ c.region }}</td>
+        <td>{{ c.competitor_brand }}</td>
+        <td>{{ c.competitor_model }}</td>
+        <td>{{ c.competitor_size }}</td>
+        <td>{{ "%.2f"|format(c.selling_price or 0) }}</td>
+        <td>{{ c.currency }}</td>
+        <td>{{ "Yes" if c.in_stock else "No" }}</td>
+        <td>
+          {% if c.url %}
+            <a href="{{ c.url }}" target="_blank">link</a>
+          {% endif %}
+        </td>
+        <td>{{ c.notes }}</td>
+        <td class="actions">
+          <a href="/competitors/{{ c.id }}/edit">Edit</a>
+          <form action="/competitors/{{ c.id }}/delete" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Delete this competitor entry?');">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No competitor prices saved yet.</p>
+  {% endif %}
+
+{% else %}
+  <h1>Competitor Prices</h1>
+  <p>No product selected.</p>
+  <p>
+    Go to the <a href="/products">Products</a> page and click the
+    “Competitors” link next to a Lassa size you want to compare.
+  </p>
+{% endif %}
+
+{% endblock %}

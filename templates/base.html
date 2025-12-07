@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tire Price Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+	/* Limit page width so it doesn't stretch across entire screen */
+.main-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* Card-style form wrapper (your form already uses class="form-grid") */
+form.form-grid {
+  background: #ffffff;
+  padding: 24px 24px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+
+/* Make single fields span full width when needed */
+.form-row.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.form-row input,
+.form-row select {
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid #d0d4da;
+  background: #f9fafb;
+}
+
+.form-row small {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* Button styling */
+form.form-grid button[type="submit"] {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background: #111827;
+  color: #f9fafb;
+}
+
+/* Responsive: one column on small screens */
+@media (max-width: 768px) {
+  form.form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f7;
+            color: #111827;
+        }
+        header {
+            background: #111827;
+            color: #f9fafb;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header h1 {
+            font-size: 18px;
+            margin: 0;
+        }
+        nav a {
+            color: #e5e7eb;
+            margin-left: 16px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            max-width: 1100px;
+            margin: 24px auto 40px auto;
+            padding: 0 16px;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 18px 20px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 6px 8px;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+        }
+        input, select {
+            font-size: 13px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            background: #111827;
+            color: #f9fafb;
+        }
+        .btn-secondary {
+    background: #4b70f5 !important;   /* blue */
+    color: #ffffff !important;        /* white text */
+    border: none;
+}
+.btn-secondary:hover {
+    background: #3458d0 !important;
+}
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .small-text {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+	.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.data-table th {
+  background: #f3f4f6;
+}
+
+/* Ensure .btn and .btn-secondary are readable */
+.btn,
+.btn-secondary {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn {
+  background: #111827;
+  color: #f9fafb;
+}
+
+.btn-secondary {
+  background: #4b5563;
+  color: #f9fafb;
+}
+
+    </style>
+</head>
+<body>
+<header>
+  <h1>Tire Price Simulator</h1>
+  <nav>
+      <a href="/">Simulator</a>
+      <a href="/products">Products</a>
+      <a href="/competitors">Competitors</a>
+      <a href="/analysis">Opportunities</a>
+  </nav>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>
+
